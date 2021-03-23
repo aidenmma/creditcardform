@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Credit Card Form / CaptiveAire </title>
+<link href="main.css" rel="stylesheet">
+
+</head>   
+
+<body>
+    <div class="credit_card_shape">
+        <p> Your Credit Card Number </p>
+        <div class="card_number" id="card-container">
+            <input type="password" class="input" id="cardnumber" name="cardnumber" maxlength='16' placeholder="0000 0000 0000 0000" onkeyup="validateCardNumber(this.value)"> 
+            <div id="logo"></div>
+        </div>
+        <p>Expiration Date (MM/YYYY) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    CVV2</p>
+        <div class="card_back_detail">   
+          <div class="expiry_date">
+          <select id="selMon" class = "expiry_date">
+            <option value="00">MM</option>
+            <option value="01">01</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="05">05</option>
+            <option value="06">06</option>
+            <option value="07">07</option>
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select>
+        <select id="selYear" class = "expiry_date">
+            <option value="00">YYYY</option>
+            <option value="01">2021</option>
+            <option value="02">2022</option>
+            <option value="03">2023</option>
+            <option value="04">2024</option>
+            <option value="05">2025</option>
+            <option value="06">2026</option>
+            <option value="07">2027</option>
+            <option value="08">2028</option>
+            <option value="09">2029</option>
+            <option value="10">2030</option>
+            <option value="11">2031</option>
+        </select>
+        </div>
+          <div class="cvv">
+            <input type="password" id="cvv" class="cvv_input" maxlength='3' data-mask="000" placeholder="000">
+            
+            <div class="cvv_img">
+                ?
+               <div class="img">
+                 <img src="https://images.myhelcim.com/img/pub/cvv-152064008867.jpg" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+         <input type="button" class="button" value="PAY" onclick="myPayment()">
+          
+        <div class="payment">
+          <p id=notice> Please fill in your card number. </p>
+        </div>
+    </div>
+    <script>
+        var isCardValid = false;
+        function validateCardNumber(cardnumber) {     
+          cardnumber = cardnumber.replace(/[ -]/g,'');
+   
+          var match = /^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/.exec(cardnumber);
+         
+          if(match) {
+              var types = ['Your Visa', 'Your MasterCard', 'Your Discover', 'Your American Express', 'Your Diners Club', 'Your JCB'];
+   
+              console.log(match); 
+              for(var i = 1; i < match.length; i++) {
+                 
+                if(match[i]) {
+                      document.getElementById('notice').innerHTML = types[i-1];
+                      break;
+                  }
+              }
+             
+              luhn(cardnumber);
+   
+          } else {
+              document.getElementById('notice').innerHTML = 'Card number is not filled in YET';
+          }
+      }
+   
+      function luhn(cardnumber) {
+         
+       
+          var getdigits = /\d/g;
+          var digits = [];
+          while(match = getdigits.exec(cardnumber)){
+              digits.push(parseInt(match[0], 10));
+          }
+          
+          var digits = cardnumber.split('');
+          for (var i = 0; i < digits.length; i++) {
+              digits[i] = parseInt(digits[i], 10);
+          }  
+   
+          var sum = 0;
+          var alt = false;
+          for (var i = digits.length - 1; i >= 0 ; i-- ) {
+              if (alt) {
+                  digits[i] *= 2;
+                  if(digits[i] > 9) {
+                      digits[i] -= 9;
+                  }
+              }
+              sum += digits[i];
+              alt = !alt;
+          }
+          if(sum % 10 == 0) {
+              document.getElementById("notice").innerHTML += "'s VALID";
+              isCardValid = true;    
+          } else {
+              document.getElementById("notice").innerHTML += "_CARD NUMBER INVALID";
+          }        
+      
+        }
+    
+        function myPayment() {            
+            var cvvNum = document.getElementById("cvv").value;            
+            var isCvvValid = cvvNum.length === 3;
+            
+            
+            var mNum = document.getElementById("selMon").value;
+            var ismNum = mNum !== "00";
+            
+            
+            
+            var yNum = document.getElementById("selYear").value;
+            var isyNum = yNum !== "00";
+            
+            
+            if(isCardValid && isCvvValid && ismNum && isyNum) {
+                alert("Thank you for your payment!")
+            } else {
+                alert("Please try again.")
+            }
+        }
+
+    </script>
+</body>
+</html>
